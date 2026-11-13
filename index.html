@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f8eee5">
+  <title>Meu Primeiro Aninho | Uma história de amor</title>
+  <style>
+    :root {
+      --cream: #fffaf5;
+      --peach: #f2c9b6;
+      --rose: #d98f83;
+      --brown: #70574b;
+      --gold: #c49b58;
+      --ink: #493b35;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); background: var(--cream);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+    .hero {
+      min-height: 92vh; display: grid; place-items: center; text-align: center;
+      padding: 70px 22px; position: relative; overflow: hidden;
+      background: radial-gradient(circle at 15% 20%, #fff 0 7%, transparent 8%),
+                  radial-gradient(circle at 85% 28%, #fff 0 5%, transparent 6%),
+                  linear-gradient(145deg, #f8e7dc, #f7eee5 55%, #ead6c8);
+    }
+    .hero::before, .hero::after {
+      content: "✦"; position: absolute; color: #c49b58; opacity: .55; font-size: 34px;
+    }
+    .hero::before { top: 13%; left: 12%; }
+    .hero::after { bottom: 16%; right: 13%; }
+    .hero-inner { max-width: 760px; position: relative; z-index: 1; }
+    .eyebrow { text-transform: uppercase; letter-spacing: .24em; font: 12px Arial, sans-serif; color: #9a7667; }
+    h1 { font-size: clamp(42px, 8vw, 82px); line-height: 1.02; font-weight: normal; margin: 20px 0 14px; color: #76584c; }
+    .hero p { font-size: clamp(17px, 2.5vw, 22px); line-height: 1.7; margin: 0 auto 28px; max-width: 610px; }
+    .baby-name { color: #b87970; font-style: italic; }
+    .button {
+      display: inline-block; padding: 13px 25px; border-radius: 30px;
+      background: #b77f72; color: white; text-decoration: none;
+      font: 13px Arial, sans-serif; letter-spacing: .08em; transition: .2s;
+    }
+    .button:hover { background: #96665d; transform: translateY(-2px); }
+    section { padding: 76px 20px; }
+    .section-inner { max-width: 1080px; margin: auto; }
+    .section-title { text-align: center; font-size: clamp(30px, 5vw, 44px); font-weight: normal; margin: 0 0 12px; color: #76584c; }
+    .section-subtitle { text-align: center; color: #947c70; line-height: 1.7; margin: 0 auto 38px; max-width: 650px; }
+    .message { background: #fff; }
+    .message-card {
+      max-width: 780px; margin: auto; padding: clamp(25px, 5vw, 48px);
+      text-align: center; border: 1px solid #ead8cc; background: #fffaf6;
+      box-shadow: 0 12px 35px #795d4a0d;
+    }
+    .message-card p { font-size: 19px; line-height: 1.9; margin: 0; }
+    .signature { display: block; margin-top: 22px; color: #b87970; font-style: italic; font-size: 20px; }
+    .gallery-section { background: #f8eee7; }
+    .gallery {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 17px;
+    }
+    .media-card {
+      position: relative; overflow: hidden; border: 7px solid white;
+      background: #eadbd1; aspect-ratio: 4 / 3; cursor: pointer;
+      box-shadow: 0 8px 22px #5c43351a; padding: 0;
+    }
+    .media-card img, .media-card video {
+      width: 100%; height: 100%; display: block; object-fit: cover;
+      transition: transform .35s;
+    }
+    .media-card:hover img, .media-card:hover video { transform: scale(1.045); }
+    .media-card.video-card::after {
+      content: "▶"; position: absolute; inset: 0; display: grid; place-items: center;
+      color: white; font: 30px Arial; text-shadow: 0 2px 10px #000;
+      background: #00000012; pointer-events: none;
+    }
+    .caption { text-align: center; color: #8c7164; font-style: italic; margin: 12px 0 0; }
+    .video-grid .media-card { aspect-ratio: 16 / 10; }
+    .closing { text-align: center; background: #fffaf5; }
+    .closing .heart { font-size: 34px; color: #c8847b; }
+    .closing p { max-width: 650px; margin: 16px auto 0; line-height: 1.8; font-size: 19px; }
+    footer { text-align: center; padding: 25px; color: #a58b7d; font: 12px Arial, sans-serif; letter-spacing: .08em; }
+    /* Visualizador: fundo escuro e mídia em destaque */
+    .lightbox {
+      display: none; position: fixed; z-index: 1000; inset: 0;
+      background: rgba(12, 10, 10, .94); align-items: center; justify-content: center;
+      padding: 65px 18px 55px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-content { max-width: min(1100px, 94vw); max-height: 82vh; display: flex; flex-direction: column; align-items: center; }
+    .lightbox img, .lightbox video {
+      display: block; max-width: 100%; max-height: 76vh; object-fit: contain;
+      box-shadow: 0 10px 45px #0008;
+    }
+    .lightbox-caption { color: #fff; font: 14px Arial, sans-serif; margin-top: 13px; text-align: center; }
+    .close, .previous, .next {
+      position: absolute; border: 0; color: white; background: #ffffff20;
+      cursor: pointer; border-radius: 50%; display: grid; place-items: center;
+    }
+    .close { top: 17px; right: 20px; width: 44px; height: 44px; font-size: 28px; }
+    .previous, .next { top: 50%; transform: translateY(-50%); width: 46px; height: 46px; font-size: 27px; }
+    .previous { left: 16px; } .next { right: 16px; }
+    .close:hover, .previous:hover, .next:hover { background: #ffffff40; }
+    @media (max-width: 600px) {
+      .hero { min-height: 82vh; }
+      section { padding: 58px 16px; }
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .media-card { border-width: 4px; }
+      .previous { left: 7px; } .next { right: 7px; }
+      .lightbox { padding-left: 8px; padding-right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CAPA: troque o nome e o texto abaixo -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Um ano de amor, descobertas e alegria</div>
+      <h1>Meu primeiro<br><span class="baby-name">aninho!</span></h1>
+      <p>Há um ano, o nosso mundo ficou mais bonito. Cada sorriso, cada descoberta e cada abraço se transformaram em lembranças que vamos guardar para sempre.</p>
+      <a class="button" href="#fotos">VER AS LEMBRANÇAS</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="message">
+      <div class="section-inner">
+        <h2 class="section-title">Uma pequena grande bênção</h2>
+        <p class="section-subtitle">365 dias de um amor que só cresce.</p>
+        <div class="message-card">
+          <p>
+            Parece que foi ontem que você chegou e encheu nossas vidas de uma alegria que nem sabíamos que cabia no coração.
+            Desde então, cada dia ao seu lado é um presente: os primeiros sorrisos, as brincadeiras, as descobertas e todos os momentos simples que se tornaram especiais.
+            <br><br>
+            Que a sua vida seja sempre cercada de carinho, saúde, proteção e muitas razões para sorrir. Que nunca faltem sonhos, colo e amor pelo caminho.
+            <br><br>
+            Feliz primeiro aniversário! Você é pequenininho(a) no tamanho, mas imenso(a) no amor que despertou em todos nós.
+          </p>
+          <span class="signature">Com todo o nosso amor ♥</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA DE FOTOS: substitua os arquivos foto-01.jpg etc. -->
+    <section class="gallery-section" id="fotos">
+      <div class="section-inner">
+        <h2 class="section-title">Momentos para guardar</h2>
+        <p class="section-subtitle">Cada foto conta um pedacinho dessa linda história. Toque em uma imagem para vê-la em destaque.</p>
+        <div class="gallery" id="photoGallery">
+          <button class="media-card" data-type="image" data-src="foto-01.jpg" data-caption="Um sorriso que ilumina tudo">
+            <img src="foto-01.jpg" alt="Foto do bebê 1" loading="lazy">
+          </button>
+          <button class="media-card" data-type="image" data-src="foto-02.jpg" data-caption="Nossos momentos especiais">
+            <img src="foto-02.jpg" alt="Foto do bebê 2" loading="lazy">
+          </button>
+          <button class="media-card" data-type="image" data-src="foto-03.jpg" data-caption="Crescendo cercado de amor">
+            <img src="foto-03.jpg" alt="Foto do bebê 3" loading="lazy">
+          </button>
+          <button class="media-card" data-type="image" data-src="foto-04.jpg" data-caption="Uma lembrança para a vida toda">
+            <img src="foto-04.jpg" alt="Foto do bebê 4" loading="lazy">
+          </button>
+          <button class="media-card" data-type="image" data-src="foto-05.jpg" data-caption="Alegria em cada descoberta">
+            <img src="foto-05.jpg" alt="Foto do bebê 5" loading="lazy">
+          </button>
+          <button class="media-card" data-type="image" data-src="foto-06.jpg" data-caption="O nosso pedacinho de céu">
+            <img src="foto-06.jpg" alt="Foto do bebê 6" loading="lazy">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA DE VÍDEOS: substitua os arquivos video-01.mp4 etc. -->
+    <section>
+      <div class="section-inner">
+        <h2 class="section-title">Em movimento, para sempre</h2>
+        <p class="section-subtitle">Porque alguns momentos merecem ser revividos. Toque no vídeo para assistir em tela de destaque.</p>
+        <div class="gallery video-grid" id="videoGallery">
+          <button class="media-card video-card" data-type="video" data-src="video-01.mp4" data-caption="Um momento cheio de alegria">
+            <img src="capa-video-01.jpg" alt="Capa do vídeo 1" loading="lazy">
+          </button>
+          <button class="media-card video-card" data-type="video" data-src="video-02.mp4" data-caption="Mais uma lembrança especial">
+            <img src="capa-video-02.jpg" alt="Capa do vídeo 2" loading="lazy">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="section-inner">
+        <div class="heart">♡</div>
+        <h2 class="section-title">E essa é só a primeira página...</h2>
+        <p>Que venham muitos outros aniversários, novas descobertas, gargalhadas e histórias lindas. O melhor da vida é acompanhar você crescer. Feliz 1 aninho!</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>FEITO COM AMOR PARA CELEBRAR UMA VIDA ESPECIAL</footer>
+
+  <!-- Janela de visualização ampliada -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Mídia ampliada">
+    <button class="close" id="closeLightbox" aria-label="Fechar">×</button>
+    <button class="previous" id="previousMedia" aria-label="Mídia anterior">‹</button>
+    <div class="lightbox-content" id="lightboxContent">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+    <button class="next" id="nextMedia" aria-label="Próxima mídia">›</button>
+  </div>
+
+  <script>
+    // Abre fotos e vídeos em destaque. O fundo fica escuro para destacar somente a mídia escolhida.
+    const items = [...document.querySelectorAll('.media-card')];
+    const lightbox = document.getElementById('lightbox');
+    const content = document.getElementById('lightboxContent');
+    const caption = document.getElementById('lightboxCaption');
+    let currentIndex = 0;
+
+    function showMedia(index) {
+      currentIndex = (index + items.length) % items.length;
+      const item = items[currentIndex];
+      content.querySelectorAll('img, video').forEach(el => el.remove());
+
+      let media;
+      if (item.dataset.type === 'video') {
+        media = document.createElement('video');
+        media.controls = true;
+        media.autoplay = true;
+        media.playsInline = true;
+        media.src = item.dataset.src;
+      } else {
+        media = document.createElement('img');
+        media.src = item.dataset.src;
+        media.alt = item.querySelector('img')?.alt || 'Foto ampliada';
+      }
+      content.insertBefore(media, caption);
+      caption.textContent = item.dataset.caption || '';
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      const video = content.querySelector('video');
+      if (video) { video.pause(); video.removeAttribute('src'); video.load(); }
+      content.querySelectorAll('img').forEach(el => el.remove());
+      document.body.style.overflow = '';
+    }
+
+    items.forEach((item, index) => item.addEventListener('click', () => showMedia(index)));
+    document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+    document.getElementById('previousMedia').addEventListener('click', () => showMedia(currentIndex - 1));
+    document.getElementById('nextMedia').addEventListener('click', () => showMedia(currentIndex + 1));
+    lightbox.addEventListener('click', event => { if (event.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', event => {
+      if (!lightbox.classList.contains('open')) return;
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowRight') showMedia(currentIndex + 1);
+      if (event.key === 'ArrowLeft') showMedia(currentIndex - 1);
+    });
+  </script>
+</body>
+</html>
