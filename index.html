@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#dbeeff">
+  <title>Meu Primeiro Aninho | Uma história de amor</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f7fbff;
+      --rose: #5b9bd0;
+      --rose-dark: #3f7fb5;
+      --gold: #c9a24f;
+      --ink: #25384a;
+      --title: #2f5d86;
+      --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      --script: "Great Vibes", "Brush Script MT", cursive;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--ink); font-family: var(--serif); font-size: 26px; font-weight: 600;
+      background: linear-gradient(180deg, #d6ebfc 0%, #eef7ff 35%, #fbfdff 100%);
+      background-attachment: scroll;
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; }
+
+    /* ===== BALÕES (leves: só transform) ===== */
+    #balloons {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 0; pointer-events: none; overflow: hidden;
+    }
+    .balloon {
+      position: absolute; bottom: -140px;
+      width: var(--s); height: calc(var(--s) * 1.2);
+      border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
+      background: var(--c); opacity: .6;
+      animation: rise var(--d) linear var(--delay) infinite;
+      will-change: transform;
+    }
+    .balloon::before { /* brilho */
+      content: ""; position: absolute; left: 22%; top: 16%;
+      width: 20%; height: 28%; border-radius: 50%;
+      background: rgba(255,255,255,.55); transform: rotate(25deg);
+    }
+    .balloon::after { /* fio */
+      content: ""; position: absolute; left: 50%; top: 100%;
+      width: 1px; height: 60px; background: rgba(90,110,130,.45);
+    }
+    @keyframes rise {
+      0%   { transform: translate3d(0, 0, 0) rotate(-4deg); }
+      50%  { transform: translate3d(var(--x), -65vh, 0) rotate(4deg); }
+      100% { transform: translate3d(0, -130vh, 0) rotate(-4deg); }
+    }
+    body.tab-hidden .balloon { animation-play-state: paused; }
+    @media (prefers-reduced-motion: reduce) { #balloons { display: none; } }
+
+    header, main, footer { position: relative; z-index: 1; }
+
+    /* ===== CAPA ===== */
+    .hero {
+      min-height: 100vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; padding: 60px 22px;
+    }
+    .hero-inner { max-width: 760px; width: 100%; }
+    .eyebrow {
+      text-transform: uppercase; letter-spacing: .22em;
+      font: 700 15px/1.6 Arial, sans-serif; color: #3f6f9a;
+    }
+
+    .photo-frame {
+      position: relative; width: 250px; height: 250px; max-width: 70vw; max-height: 70vw;
+      margin: 28px auto 10px; border-radius: 50%;
+      border: 7px solid #fff; background: linear-gradient(145deg, #cfe6f8, #a9d0ef);
+      box-shadow: 0 0 0 5px #d9b97a, 0 18px 45px rgba(50,100,150,.28);
+    }
+    .photo-frame .photo {
+      display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    }
+    .photo-frame .placeholder {
+      display: none; position: absolute; inset: 0; border-radius: 50%;
+      align-items: center; justify-content: center;
+      font: italic 600 110px/1 var(--serif); color: var(--gold);
+    }
+    .photo-frame.empty .photo { display: none; }
+    .photo-frame.empty .placeholder { display: flex; }
+    .badge {
+      position: absolute; right: -10px; bottom: 10px; width: 76px; height: 76px;
+      border-radius: 50%; background: var(--rose); color: #fff; border: 3px solid #fff;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font: 600 11px/1.1 Arial, sans-serif; letter-spacing: .06em; text-transform: uppercase;
+      box-shadow: 0 8px 18px rgba(63,127,181,.45);
+    }
+    .badge b { font: italic 600 32px/1 var(--serif); }
+
+    h1 {
+      font-size: clamp(46px, 10.5vw, 84px); line-height: 1.05; font-weight: 700;
+      margin: 0 0 4px; color: var(--title);
+    }
+    .baby-name {
+      display: block; font: 400 clamp(76px, 19vw, 140px)/1.1 var(--script); color: var(--rose-dark);
+    }
+    .name-line { font: 700 clamp(54px, 13vw, 84px)/1.1 var(--script); color: var(--gold); margin-top: 22px; -webkit-text-stroke: 1.5px var(--gold); text-shadow: 0 2px 8px rgba(255,255,255,.8); }
+    .name-line:empty { display: none; }
+
+    /* Frase de destaque da capa: sem caixa, com filetes dourados e cor forte */
+    .lead {
+      position: relative; font-weight: 700; font-style: italic;
+      font-size: clamp(27px, 4.6vw, 38px); line-height: 1.55;
+      margin: 38px auto 0; max-width: 720px; padding: 34px 6px;
+      color: var(--title);
+      text-shadow: 0 2px 10px rgba(255,255,255,.9), 0 1px 0 rgba(255,255,255,.8);
+    }
+    .lead::before, .lead::after {
+      content: "✦"; position: absolute; left: 0; right: 0; text-align: center;
+      font: 18px/1 Arial, sans-serif; color: var(--gold); letter-spacing: 0;
+      background: linear-gradient(90deg, transparent 0, var(--gold) 0, var(--gold) 38%, transparent 38%, transparent 62%, var(--gold) 62%, var(--gold) 100%, transparent 100%) center / 100% 2px no-repeat;
+      height: 18px;
+    }
+    .lead::before { top: 0; }
+    .lead::after { bottom: 0; }
+
+    /* ===== SEÇÕES ===== */
+    section { padding: 80px 20px; }
+    .section-inner { max-width: 1080px; margin: 0 auto; }
+    .section-title {
+      text-align: center; font-size: clamp(40px, 7vw, 58px); font-weight: 700;
+      margin: 0 0 12px; color: var(--title);
+    }
+    .section-subtitle {
+      text-align: center; color: #46647c; line-height: 1.7; margin: 0 auto 38px; max-width: 720px; font-size: clamp(24px, 3.2vw, 30px); font-weight: 700;
+    }
+    /* "365 dias de um amor que só cresce." maior */
+    .section-subtitle.big { font-size: clamp(30px, 5vw, 42px); line-height: 1.4; color: #2f5d86; }
+    .orn { text-align: center; color: var(--gold); font-size: 15px; margin: 0 0 14px; }
+
+    .message-card {
+      max-width: 820px; margin: 0 auto; padding: clamp(26px, 5vw, 52px); text-align: center;
+      background: rgba(255,255,255,.96); border: 1px solid #cfe0ee; border-radius: 6px;
+      box-shadow: 0 14px 40px rgba(50,100,150,.12);
+      outline: 1px solid #cfe0ee; outline-offset: -10px;
+    }
+    .message-card p { font-weight: 700; font-size: clamp(25px, 3.4vw, 31px); line-height: 1.8; margin: 0; }
+    .signature { display: block; margin-top: 22px; color: var(--rose-dark); font: 400 44px/1 var(--script); }
+
+    .gallery-section { background: rgba(214,235,250,.75); }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; }
+    .media-card {
+      position: relative; overflow: hidden; padding: 0; cursor: pointer;
+      border: 8px solid #fff; border-radius: 4px; aspect-ratio: 4 / 3;
+      background: linear-gradient(145deg, #d6eaf8, #b9d8ef);
+      box-shadow: 0 10px 26px rgba(40,80,120,.15);
+      transition: transform .3s, box-shadow .3s;
+    }
+    .media-card:hover { transform: translateY(-4px); box-shadow: 0 16px 34px rgba(40,80,120,.25); }
+    .media-card img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform .4s; }
+    .media-card:hover img { transform: scale(1.05); }
+    .video-card::after {
+      content: "▶"; position: absolute; left: 50%; top: 50%;
+      width: 56px; height: 56px; margin: -28px 0 0 -28px; padding-left: 4px;
+      display: flex; align-items: center; justify-content: center; border-radius: 50%;
+      color: #fff; font: 22px Arial, sans-serif; background: rgba(0,0,0,.4); pointer-events: none;
+    }
+    .video-grid .media-card { aspect-ratio: 16 / 10; }
+
+    .closing { text-align: center; }
+    .heart { font-size: 40px; color: #5b9bd0; display: inline-block; animation: beat 1.8s ease-in-out infinite; }
+    @keyframes beat { 0%,100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+    .closing p { font-weight: 700; max-width: 720px; margin: 16px auto 0; line-height: 1.8; font-size: clamp(25px, 3.4vw, 31px); }
+    footer { text-align: center; padding: 28px; color: #6f8aa0; font: 15px Arial, sans-serif; letter-spacing: .1em; }
+
+    /* ===== VISUALIZADOR ===== */
+    .lightbox {
+      display: none; position: fixed; z-index: 1000; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(12,10,10,.95); align-items: center; justify-content: center; padding: 65px 18px 55px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-content { max-width: 94vw; max-height: 85vh; display: flex; flex-direction: column; align-items: center; }
+    .lightbox-content img, .lightbox-content video {
+      display: block; max-width: 100%; max-height: 76vh; object-fit: contain; box-shadow: 0 10px 45px rgba(0,0,0,.5);
+    }
+    .lightbox-caption { color: #fff; font: italic 700 26px var(--serif); margin-top: 14px; text-align: center; }
+    .close, .previous, .next {
+      position: absolute; border: 0; color: #fff; background: rgba(255,255,255,.15);
+      cursor: pointer; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    }
+    .close { top: 17px; right: 20px; width: 44px; height: 44px; font-size: 28px; }
+    .previous, .next { top: 50%; margin-top: -23px; width: 46px; height: 46px; font-size: 27px; }
+    .previous { left: 16px; }
+    .next { right: 16px; }
+    .close:hover, .previous:hover, .next:hover { background: rgba(255,255,255,.3); }
+
+    @media (max-width: 600px) {
+      body { font-size: 24px; }
+      section { padding: 56px 16px; }
+      .gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .video-grid { grid-template-columns: 1fr; }
+      .media-card { border-width: 4px; }
+      .previous { left: 6px; } .next { right: 6px; }
+      .lightbox { padding-left: 8px; padding-right: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Balões subindo (criados pelo script) -->
+  <div id="balloons" aria-hidden="true"></div>
+
+  <!-- CAPA -->
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="eyebrow">Um ano de amor, descobertas e alegria</div>
+
+      <!-- FOTO DA CAPA: salve a foto como "foto-capa.jpg" na mesma pasta deste arquivo -->
+      <div class="photo-frame" id="photoFrame">
+        <img class="photo" src="foto-capa.jpg" alt="Foto do aniversariante"
+             onerror="this.parentNode.classList.add('empty')">
+        <div class="placeholder" aria-hidden="true">1</div>
+        <div class="badge"><b>1</b>aninho</div>
+      </div>
+
+      <div class="name-line" id="babyName"></div>
+      <h1>Meu primeiro <span class="baby-name">aninho!</span></h1>
+      <p class="lead">Há um ano, o nosso mundo ficou mais bonito. Cada sorriso, cada descoberta e cada abraço se transformaram em lembranças que vamos guardar para sempre.</p>
+    </div>
+  </header>
+
+  <main>
+    <section>
+      <div class="section-inner">
+        <h2 class="section-title">Uma pequena grande bênção</h2>
+        <p class="section-subtitle big">365 dias de um amor que só cresce.</p>
+        <div class="message-card">
+          <p>
+            Parece que foi ontem que você chegou e encheu nossas vidas de uma alegria que nem sabíamos que cabia no coração.
+            Desde então, cada dia ao seu lado é um presente: os primeiros sorrisos, as brincadeiras, as descobertas e todos os momentos simples que se tornaram especiais.
+            <br><br>
+            Que a sua vida seja sempre cercada de carinho, saúde, proteção e muitas razões para sorrir. Que nunca faltem sonhos, colo e amor pelo caminho.
+            <br><br>
+            Feliz primeiro aniversário! Você é pequenininho(a) no tamanho, mas imenso(a) no amor que despertou em todos nós.
+          </p>
+          <span class="signature">Com todo o nosso amor ♥</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA DE FOTOS: substitua foto-01.jpg etc. -->
+    <section class="gallery-section" id="fotos">
+      <div class="section-inner">
+        <h2 class="section-title">Momentos para guardar</h2>
+        <p class="section-subtitle">Cada foto conta um pedacinho dessa linda história. Toque em uma imagem para vê-la em destaque.</p>
+        <div class="gallery">
+          <button type="button" class="media-card" data-type="image" data-src="foto-01.jpg" data-caption="Um sorriso que ilumina tudo">
+            <img src="foto-01.jpg" alt="Foto do bebê 1" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+          <button type="button" class="media-card" data-type="image" data-src="foto-02.jpg" data-caption="Nossos momentos especiais">
+            <img src="foto-02.jpg" alt="Foto do bebê 2" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+          <button type="button" class="media-card" data-type="image" data-src="foto-03.jpg" data-caption="Crescendo cercado de amor">
+            <img src="foto-03.jpg" alt="Foto do bebê 3" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+          <button type="button" class="media-card" data-type="image" data-src="foto-04.jpg" data-caption="Uma lembrança para a vida toda">
+            <img src="foto-04.jpg" alt="Foto do bebê 4" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+          <button type="button" class="media-card" data-type="image" data-src="foto-05.jpg" data-caption="Alegria em cada descoberta">
+            <img src="foto-05.jpg" alt="Foto do bebê 5" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+          <button type="button" class="media-card" data-type="image" data-src="foto-06.jpg" data-caption="O nosso pedacinho de céu">
+            <img src="foto-06.jpg" alt="Foto do bebê 6" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALERIA DE VÍDEOS: substitua video-01.mp4 etc. e as capas -->
+    <section>
+      <div class="section-inner">
+        <h2 class="section-title">Em movimento, para sempre</h2>
+        <p class="section-subtitle">Porque alguns momentos merecem ser revividos. Toque no vídeo para assistir em tela de destaque.</p>
+        <div class="gallery video-grid">
+          <button type="button" class="media-card video-card" data-type="video" data-src="video-01.mp4" data-caption="Um momento cheio de alegria">
+            <img src="capa-video-01.jpg" alt="Capa do vídeo 1" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+          <button type="button" class="media-card video-card" data-type="video" data-src="video-02.mp4" data-caption="Mais uma lembrança especial">
+            <img src="capa-video-02.jpg" alt="Capa do vídeo 2" loading="lazy" onerror="this.style.visibility='hidden'">
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing">
+      <div class="section-inner">
+        <div class="heart">♡</div>
+        <h2 class="section-title">E essa é só a primeira página...</h2>
+        <p>Que venham muitos outros aniversários, novas descobertas, gargalhadas e histórias lindas. O melhor da vida é acompanhar você crescer. Feliz 1 aninho!</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>FEITO COM AMOR PARA CELEBRAR UMA VIDA ESPECIAL</footer>
+
+  <!-- Janela de visualização ampliada -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Mídia ampliada">
+    <button type="button" class="close" id="closeLightbox" aria-label="Fechar">×</button>
+    <button type="button" class="previous" id="previousMedia" aria-label="Anterior">‹</button>
+    <div class="lightbox-content" id="lightboxContent">
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+    </div>
+    <button type="button" class="next" id="nextMedia" aria-label="Próxima">›</button>
+  </div>
+
+  <script>
+    // ====== PERSONALIZE AQUI ======
+    var NOME_DO_BEBE = "Ruan Vitor";   // ex.: "Helena" (deixe vazio para não mostrar)
+    var QTD_BALOES = 14;     // menos balões = mais leve (8 a 18 é ideal)
+
+    if (NOME_DO_BEBE) document.getElementById('babyName').textContent = NOME_DO_BEBE;
+
+    // ----- Balões -----
+    (function () {
+      var box = document.getElementById('balloons');
+      var colors = ['#6fa8d6', '#9cc9ea', '#f2cf6b', '#8fd0c0', '#b7d9a8', '#f4a98a', '#c3b6ee'];
+      var count = window.innerWidth < 600 ? Math.min(QTD_BALOES, 9) : QTD_BALOES;
+      for (var i = 0; i < count; i++) {
+        var b = document.createElement('span');
+        b.className = 'balloon';
+        b.style.setProperty('--s', (34 + Math.random() * 32) + 'px');
+        b.style.setProperty('--c', colors[i % colors.length]);
+        b.style.setProperty('--d', (16 + Math.random() * 14) + 's');
+        b.style.setProperty('--delay', (-Math.random() * 28) + 's');
+        b.style.setProperty('--x', (Math.random() * 80 - 40) + 'px');
+        b.style.left = (2 + (i / count) * 92 + Math.random() * 4) + '%';
+        box.appendChild(b);
+      }
+      document.addEventListener('visibilitychange', function () {
+        document.body.classList.toggle('tab-hidden', document.hidden);
+      });
+    })();
+
+    // ----- Visualizador -----
+    var items = Array.prototype.slice.call(document.querySelectorAll('.media-card'));
+    var lightbox = document.getElementById('lightbox');
+    var content = document.getElementById('lightboxContent');
+    var caption = document.getElementById('lightboxCaption');
+    var currentIndex = 0;
+
+    function clearMedia() {
+      var video = content.querySelector('video');
+      if (video) { video.pause(); video.removeAttribute('src'); video.load(); }
+      var els = content.querySelectorAll('img, video');
+      for (var i = 0; i < els.length; i++) els[i].remove();
+    }
+
+    function showMedia(index) {
+      currentIndex = (index + items.length) % items.length;
+      var item = items[currentIndex];
+      clearMedia();
+      var media;
+      if (item.getAttribute('data-type') === 'video') {
+        media = document.createElement('video');
+        media.controls = true;
+        media.autoplay = true;
+        media.setAttribute('playsinline', '');
+        media.src = item.getAttribute('data-src');
+      } else {
+        media = document.createElement('img');
+        media.src = item.getAttribute('data-src');
+        media.alt = 'Foto ampliada';
+      }
+      content.insertBefore(media, caption);
+      caption.textContent = item.getAttribute('data-caption') || '';
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      clearMedia();
+      document.body.style.overflow = '';
+    }
+
+    items.forEach(function (item, index) {
+      item.addEventListener('click', function () { showMedia(index); });
+    });
+    document.getElementById('closeLightbox').addEventListener('click', closeLightbox);
+    document.getElementById('previousMedia').addEventListener('click', function () { showMedia(currentIndex - 1); });
+    document.getElementById('nextMedia').addEventListener('click', function () { showMedia(currentIndex + 1); });
+    lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLightbox(); });
+    document.addEventListener('keydown', function (e) {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') showMedia(currentIndex + 1);
+      if (e.key === 'ArrowLeft') showMedia(currentIndex - 1);
+    });
+
+    // Deslizar no celular
+    var touchX = null;
+    lightbox.addEventListener('touchstart', function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+    lightbox.addEventListener('touchend', function (e) {
+      if (touchX === null) return;
+      var dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 60) showMedia(currentIndex + (dx < 0 ? 1 : -1));
+      touchX = null;
+    });
+  </script>
+</body>
+</html>
