@@ -374,18 +374,15 @@
 // ================================================================
 // JOGOS (API)
 //
-// A lista vem de https://embedtv.cc/api/events. Cada jogo tem título,
-// liga, times, horário de início/fim e uma ou mais URLs de player.
+// A lista vem do arquivo "events.json" (mesma pasta deste index.html).
 //
-// Se o navegador bloquear a chamada direta (CORS), o site tenta
-// automaticamente por meio de proxies públicos (lista PROXIES abaixo).
+// Para atualizar: abra https://embedtv.cc/api/events no navegador,
+// copie todo o texto e cole dentro do events.json (substituindo tudo).
+// Cada jogo tem título, liga, times, horário de início/fim e uma ou
+// mais URLs de player.
 // ================================================================
-const API_URL = "https://embedtv.cc/api/events";
-const PROXIES = [
-  (u) => "https://corsproxy.io/?" + encodeURIComponent(u),
-  (u) => "https://api.allorigins.win/raw?url=" + encodeURIComponent(u)
-];
-const REFRESH_MS = 5 * 60 * 1000;   // atualiza a lista a cada 5 min
+const EVENTS_FILE = "events.json";
+const REFRESH_MS = 5 * 60 * 1000;   // relê o arquivo a cada 5 min
 
 const CHANNEL_NAMES = {
   premiere: "Premiere", espn: "ESPN", espn2: "ESPN 2", espn3: "ESPN 3", espn4: "ESPN 4",
@@ -585,7 +582,7 @@ function renderEvents() {
   } else if (loadState === "error" && !events.length) {
     const none = document.createElement("div");
     none.className = "none";
-    none.textContent = "Não foi possível carregar os jogos agora.";
+    none.textContent = "Não foi possível carregar o events.json. Confira se o arquivo está na mesma pasta do index.html e se o conteúdo está certo.";
     const retry = document.createElement("button");
     retry.type = "button"; retry.className = "retry-btn"; retry.textContent = "Tentar de novo";
     retry.addEventListener("click", () => refreshEvents(true));
@@ -796,20 +793,11 @@ async function getJSON(url, ms) {
 }
 
 async function fetchEvents() {
-  const attempts = [API_URL, ...PROXIES.map((p) => p(API_URL))];
-  let lastError;
-  for (const url of attempts) {
-    try {
-      const data = await getJSON(url, 9000);
-      const parsed = normalizeEvents(data);
-      if (Array.isArray(data) || parsed.length) return parsed;
-      throw new Error("resposta inesperada");
-    } catch (e) { lastError = e; }
-  }
-  throw lastError;
+  const data = await getJSON(EVENTS_FILE + "?t=" + Date.now(), 9000);
+  return normalizeEvents(data);
 }
 
-let refreshing = false;
+let refreshing = false, staleWarned = false;
 async function refreshEvents(showLoading) {
   if (refreshing) return;
   refreshing = true;
@@ -818,6 +806,10 @@ async function refreshEvents(showLoading) {
     events = await fetchEvents();
     loadState = "ok";
     lastFetch = Date.now();
+    if (!staleWarned && events.length && events.every((e) => statusOf(e, Date.now()) === "ended")) {
+      staleWarned = true;
+      toast("A lista parece desatualizada: cole o JSON de hoje no events.json");
+    }
   } catch (e) {
     if (!events.length) loadState = "error";
   }
